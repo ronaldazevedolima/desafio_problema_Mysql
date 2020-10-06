@@ -1,2 +1,2 @@
 # banco_de_dados
-Banco de dados usando MYSQL
+Buscando consolidar meu conhecimento em banco de dados MYSQL, resolvi criar um banco de dados para meus livros.
