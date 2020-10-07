@@ -3,22 +3,10 @@ CREATE DATABASE IF NOT EXISTS ronald_livros;
 USE ronald_livros;
 
 CREATE TABLE IF NOT EXISTS AUTOR (
-id_autor SMALLINT AUTO_INCREMENT PRIMARY KEY,
+id SMALLINT AUTO_INCREMENT PRIMARY KEY,
 nome_autor VARCHAR(100) NOT NULL,
 nome_completo VARCHAR(100) NOT NULL 
 );
-
-DELIMITER $$
-CREATE PROCEDURE adicionar_autor(nome VARCHAR(100), nomeCompleto VARCHAR(100))
-BEGIN
-INSERT INTO AUTOR (nome_autor, nome_completo)
-VALUES
-(nome, nomeCompleto);
-END $$
-DELIMITER;
--- Passar como parametros nome/nomeCompleto strings
--- CALL adicionar_autor('Philip Pullman', 'Philip Pullman');
--- SELECT * FROM ronald_livros.AUTOR;
 
 INSERT INTO AUTOR (nome_autor, nome_completo)
 VALUES
@@ -61,21 +49,9 @@ VALUES
 ('Terence David John Pratchett', 'Terry Pratchett');
 
 CREATE TABLE IF NOT EXISTS CATEGORIA (
-id_categoria SMALLINT AUTO_INCREMENT PRIMARY KEY,
+id SMALLINT AUTO_INCREMENT PRIMARY KEY,
 nome_categoria VARCHAR(50) NOT NULL
 );
-
-DELIMITER $$
-CREATE PROCEDURE adicionar_categoria(nome VARCHAR(50))
-BEGIN
-INSERT INTO CATEGORIA (nome_categoria)
-VALUES
-(nome);
-END $$
-DELIMITER;
--- Passar como parametros nome string
--- CALL adicionar_categoria('Terror');
--- SELECT * FROM ronald_livros.CATEGORIA;
 
 INSERT INTO CATEGORIA (nome_categoria)
 VALUES
@@ -84,21 +60,9 @@ VALUES
 ('Ficção científica');
 
 CREATE TABLE IF NOT EXISTS EDITORA (
-id_editora SMALLINT AUTO_INCREMENT PRIMARY KEY,
+id SMALLINT AUTO_INCREMENT PRIMARY KEY,
 nome_editora VARCHAR(50) NOT NULL
 );
-
-DELIMITER $$
-CREATE PROCEDURE adicionar_editora(nome VARCHAR(50))
-BEGIN
-INSERT INTO EDITORA (nome_editora)
-VALUES
-(nome);
-END $$
-DELIMITER;
--- Passar como parametros nome string
--- CALL adicionar_editora('Intrínseca');
--- SELECT * FROM ronald_livros.EDITORA;
 
 INSERT INTO EDITORA (nome_editora)
 VALUES
@@ -123,23 +87,10 @@ VALUES
 ('Ediouro');
 
 CREATE TABLE IF NOT EXISTS COLECAO (
-id_colecao SMALLINT AUTO_INCREMENT PRIMARY KEY,
+id SMALLINT AUTO_INCREMENT PRIMARY KEY,
 nome_colecao VARCHAR(70) NOT NULL,
 volumes SMALLINT NOT NULL
 );
-
-DELIMITER $$
-CREATE PROCEDURE adicionar_colecao(nome VARCHAR(70), volumes SMALLINT)
-BEGIN
-INSERT INTO COLECAO (nome_colecao, volumes)
-VALUES
-(nome, volumes);
-END $$
-DELIMITER;
--- Passar como parametros nome string, volumes int
--- CALL adicionar_colecao('Fronteiras do Universo', 3);
--- SELECT * FROM ronald_livros.COLECAO;
-
 
 INSERT INTO COLECAO (nome_colecao, volumes)
 VALUES
@@ -183,7 +134,7 @@ VALUES
 ('Discoworld', 41);
 
 CREATE TABLE IF NOT EXISTS LIVROS (
-id_livro SMALLINT AUTO_INCREMENT PRIMARY KEY,
+id SMALLINT AUTO_INCREMENT PRIMARY KEY,
 id_colecao SMALLINT NOT NULL,
 nome_livro VARCHAR(100) NOT NULL,
 id_autor SMALLINT NOT NULL,
@@ -192,23 +143,11 @@ lido BOOL NOT NULL,
 nota SMALLINT NOT NULL,
 id_categoria SMALLINT NOT NULL,
 id_editora SMALLINT NOT NULL,
-FOREIGN KEY (id_autor) REFERENCES AUTOR(id_autor),
-FOREIGN KEY (id_editora) REFERENCES EDITORA(id_editora),
-FOREIGN KEY (id_colecao) REFERENCES COLECAO(id_colecao),
-FOREIGN KEY (id_categoria) REFERENCES CATEGORIA(id_categoria)
+FOREIGN KEY (id_autor) REFERENCES AUTOR(id),
+FOREIGN KEY (id_editora) REFERENCES EDITORA(id),
+FOREIGN KEY (id_colecao) REFERENCES COLECAO(id),
+FOREIGN KEY (id_categoria) REFERENCES CATEGORIA(id)
 );
-
-DELIMITER $$
-CREATE PROCEDURE adicionar_livro(colecao SMALLINT, nome VARCHAR(100), autor SMALLINT, tenho BOOL, lido BOOL, nota SMALLINT, categoria SMALLINT, editora SMALLINT)
-BEGIN
-INSERT INTO LIVROS(id_colecao, nome_livro, id_autor, tenho, lido, nota, id_categoria, id_editora)
-VALUES
-(colecao, nome, autor, tenho, lido, nota, categoria, editora);
-END $$
-DELIMITER;
--- Passar como parametros colecao int, nome string, autor int, tenho bool, lido bool, nota int, categoria int, editora int
--- CALL adicionar_livro(1, 'O Condenado', 2, 0, 0, 0, 2, 3);
--- SELECT * FROM ronald_livros.LIVROS;
 
 INSERT INTO LIVROS(id_colecao, nome_livro, id_autor, tenho, lido, nota, id_categoria, id_editora)
 VALUES
@@ -383,8 +322,94 @@ VALUES
 (1,'Jogador Nº 1', 32, 1, 1, 9, 3, 2),
 (1,'Ruas Estranhas', 5, 0, 0, 0, 3, 2),
 (1,'Os Pilares da Terra', 33, 1, 1, 8, 2, 8),
-(1,'Stonehenge', 2, 0, 0, 0, 2, 3),
-(1,'O Mundo Magico Do Senhor Dos Aneis', 34, 0, 0, 0, 1, 18),
+(1,'Stonehenge', 2, 1, 0, 0, 2, 3),
+(1,'O Mundo Magico Do Senhor Dos Aneis', 34, 1, 0, 0, 1, 18),
 (1,'Os Filhos de Húrin', 1, 1, 1, 9, 1, 9),
-(1,'Fora de Controle', 36, 0, 0, 0, 2, 19);
+(1,'Fora de Controle', 36, 1, 0, 0, 2, 19);
+
+-- ____________________CRUD_____________________
+
+-- ADICIONAR AUTOR
+DELIMITER $$
+CREATE PROCEDURE adicionar_autor(nome VARCHAR(100), nomeCompleto VARCHAR(100))
+BEGIN
+INSERT INTO AUTOR (nome_autor, nome_completo)
+VALUES
+(nome, nomeCompleto);
+END $$
+DELIMITER ;
+-- Passar como parametros nome/nomeCompleto strings
+-- CALL adicionar_autor('Philip Pullman', 'Philip Pullman');
+-- SELECT * FROM ronald_livros.AUTOR;
+
+-- ADICIONAR EDITORA
+DELIMITER $$
+CREATE PROCEDURE adicionar_editora(nome VARCHAR(50))
+BEGIN
+INSERT INTO EDITORA (nome_editora)
+VALUES
+(nome);
+END $$
+DELIMITER;
+-- Passar como parametros nome string
+-- CALL adicionar_editora('Intrínseca');
+-- SELECT * FROM ronald_livros.EDITORA;
+
+-- ADICIONAR COLECAO
+DELIMITER $$
+CREATE PROCEDURE adicionar_colecao(nome VARCHAR(70), volumes SMALLINT)
+BEGIN
+INSERT INTO COLECAO (nome_colecao, volumes)
+VALUES
+(nome, volumes);
+END $$
+DELIMITER ;
+-- Passar como parametros nome string, volumes int
+-- CALL adicionar_colecao('Fronteiras do Universo', 3);
+-- SELECT * FROM ronald_livros.COLECAO;
+
+-- ADICIONAR CATEGORIA
+DELIMITER $$
+CREATE PROCEDURE adicionar_categoria(nome VARCHAR(50))
+BEGIN
+INSERT INTO CATEGORIA (nome_categoria)
+VALUES
+(nome);
+END $$
+DELIMITER ;
+-- Passar como parametros nome string
+-- CALL adicionar_categoria('Terror');
+-- SELECT * FROM ronald_livros.CATEGORIA;
+
+-- ADICIONAR LIVRO
+DELIMITER $$
+CREATE PROCEDURE adicionar_livro(colecao SMALLINT, nome VARCHAR(100), autor SMALLINT, tenho BOOL, lido BOOL, nota SMALLINT, categoria SMALLINT, editora SMALLINT)
+BEGIN
+INSERT INTO LIVROS(id_colecao, nome_livro, id_autor, tenho, lido, nota, id_categoria, id_editora)
+VALUES
+(colecao, nome, autor, tenho, lido, nota, categoria, editora);
+END $$
+DELIMITER ;
+-- Passar como parametros colecao int, nome string, autor int, tenho bool, lido bool, nota int, categoria int, editora int
+-- CALL adicionar_livro(1, 'O Condenado', 2, 0, 0, 0, 2, 3);
+-- SELECT * FROM ronald_livros.LIVROS;
+
+-- ATUALIZAR
+DELIMITER $$
+CREATE PROCEDURE atualizar(
+in id SMALLINT,
+in tabela VARCHAR(20),
+in coluna VARCHAR(20),
+in valor varchar(100)
+)
+BEGIN
+UPDATE tabela
+set tabela.coluna = valor
+where tabela.id = id;
+END $$
+DELIMITER ;
+-- passar como id o id do item a ser atualizado, tabela a tabela a ser modificada, coluna o atributo  e valor oq vai ser subistituido
+-- CALL atualizar (170, LIVROS, tenho, 1);
+-- SELECT * FROM LIVROS where id = 170;
+
 
