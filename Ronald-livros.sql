@@ -395,21 +395,33 @@ DELIMITER ;
 -- SELECT * FROM ronald_livros.LIVROS;
 
 -- ATUALIZAR
+drop procedure atualizar;
 DELIMITER $$
 CREATE PROCEDURE atualizar(
-in id SMALLINT,
+in idInput SMALLINT,
 in tabela VARCHAR(20),
 in coluna VARCHAR(20),
 in valor varchar(100)
 )
 BEGIN
-UPDATE tabela
-set tabela.coluna = valor
-where tabela.id = id;
+declare idIn SMALLINT;
+declare tab VARCHAR(20);
+declare col VARCHAR(20);
+declare val varchar(100);
+set idIn = idInput;
+set tab = tabela;
+set col = coluna;
+set val = valor;
+UPDATE tab
+set col = val
+where id = idIn;
 END $$
 DELIMITER ;
 -- passar como id o id do item a ser atualizado, tabela a tabela a ser modificada, coluna o atributo  e valor oq vai ser subistituido
 -- CALL atualizar (170, LIVROS, tenho, 1);
 -- SELECT * FROM LIVROS where id = 170;
+
+
+
 
 

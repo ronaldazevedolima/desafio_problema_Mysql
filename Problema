@@ -1,0 +1,20 @@
+Estou tentando criar um procedure generico para atualizar meu banco de dados, mas nao estou conseguindo passar
+ alguns parametros
+
+DELIMITER $$
+CREATE PROCEDURE atualizar(
+in idInput SMALLINT,
+in tabela VARCHAR(20),
+in coluna VARCHAR(20),
+in valor varchar(100)
+)
+BEGIN
+UPDATE tabela
+SET coluna = valor
+WHERE id = idInput
+END $$
+
+nao consigo passar valores para as variaveis "tabela"(linha 11) e "coluna"(linha12)
+
+conversando com o Renato filho chegamos a conclusao que o MYSQL nao aceita ser tao generico assim, 
+mas pensei em perguntar pra quem trabalha com isso pra ter certeza
